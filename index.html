@@ -1160,36 +1160,42 @@
     <p class="contact-sub">Ready to transform your technology, secure your systems, or achieve ISO certification? Let's start with a conversation.</p>
   </div>
   <div class="contact-form reveal reveal-delay-2">
-    <div class="form-row">
-      <div class="form-group">
-        <label class="form-label">First Name</label>
-        <input type="text" class="form-control" placeholder="Juan">
+    <form id="contactForm">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" name="first_name" class="form-control" placeholder="Juan" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" name="last_name" class="form-control" placeholder="dela Cruz" required>
+        </div>
       </div>
       <div class="form-group">
-        <label class="form-label">Last Name</label>
-        <input type="text" class="form-control" placeholder="dela Cruz">
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-control" placeholder="you@company.com" required>
       </div>
+      <div class="form-group">
+        <label class="form-label">Service of Interest</label>
+        <select name="service" class="form-control" style="background:var(--steel);cursor:none">
+          <option value="" style="background:var(--steel)">Select a service...</option>
+          <option style="background:var(--steel)">Software Engineering</option>
+          <option style="background:var(--steel)">Project Management</option>
+          <option style="background:var(--steel)">Solutions Architecture</option>
+          <option style="background:var(--steel)">Data Protection &amp; Cybersecurity</option>
+          <option style="background:var(--steel)">ISO Implementation</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea name="message" class="form-control" rows="4" placeholder="Tell me about your project..." required></textarea>
+      </div>
+      <button type="submit" class="submit-btn" id="submitBtn">Send Message →</button>
+    </form>
+    <div id="formSuccess" style="display:none;padding:2.5rem;border:1px solid var(--gold);text-align:center;margin-top:1rem">
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:2.5rem;color:var(--gold);letter-spacing:0.1em;margin-bottom:0.5rem">Message Sent ✓</div>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--muted);letter-spacing:0.15em;line-height:1.8">Thanks for reaching out.<br>Rev will get back to you shortly.</p>
     </div>
-    <div class="form-group">
-      <label class="form-label">Email Address</label>
-      <input type="email" class="form-control" placeholder="you@company.com">
-    </div>
-    <div class="form-group">
-      <label class="form-label">Service of Interest</label>
-      <select class="form-control" style="background:var(--steel);cursor:none">
-        <option value="" style="background:var(--steel)">Select a service...</option>
-        <option style="background:var(--steel)">Software Engineering</option>
-        <option style="background:var(--steel)">Project Management</option>
-        <option style="background:var(--steel)">Solutions Architecture</option>
-        <option style="background:var(--steel)">Data Protection & Cybersecurity</option>
-        <option style="background:var(--steel)">ISO Implementation</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Message</label>
-      <textarea class="form-control" rows="4" placeholder="Tell me about your project..."></textarea>
-    </div>
-    <button class="submit-btn" onclick="handleSubmit(this)">Send Message →</button>
   </div>
 </section>
 
@@ -1334,17 +1340,39 @@ function initReveal() {
   document.querySelectorAll('[data-count]').forEach(el => countObs.observe(el));
 }
 
-// FORM SUBMIT
-function handleSubmit(btn) {
-  const orig = btn.textContent;
-  btn.textContent = 'Sending...';
-  btn.style.opacity = '0.7';
-  setTimeout(() => {
-    btn.textContent = '✓ Message Sent';
-    btn.style.background = '#2a6b44';
-    btn.style.opacity = '1';
-    setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 3000);
-  }, 1500);
+// FORM SUBMIT via Formspree
+const contactForm = document.getElementById('contactForm');
+if (contactForm) {
+  contactForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submitBtn');
+    const orig = btn.textContent;
+    btn.textContent = 'Sending...';
+    btn.style.opacity = '0.7';
+    btn.disabled = true;
+    const data = new FormData(contactForm);
+    try {
+      const res = await fetch('https://formspree.io/f/xaqpkdlk', {
+        method: 'POST',
+        body: data,
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        contactForm.style.display = 'none';
+        document.getElementById('formSuccess').style.display = 'block';
+      } else {
+        btn.textContent = 'Something went wrong. Try again.';
+        btn.style.opacity = '1';
+        btn.disabled = false;
+        setTimeout(() => { btn.textContent = orig; }, 3000);
+      }
+    } catch(err) {
+      btn.textContent = 'Network error. Try again.';
+      btn.style.opacity = '1';
+      btn.disabled = false;
+      setTimeout(() => { btn.textContent = orig; }, 3000);
+    }
+  });
 }
 </script>
 </body>
