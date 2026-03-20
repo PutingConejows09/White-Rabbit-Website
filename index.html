@@ -776,6 +776,14 @@
     .footer-links { flex-wrap: wrap; gap: 1rem; }
   }
 
+  /* Speaking engagements mobile fix */
+  @media (max-width: 900px) {
+    #speakingGrid { grid-template-columns: 1fr !important; }
+    #careerTalksCard { grid-column: span 1 !important; }
+    #isoServiceCard { grid-column: span 1 !important; }
+    #certs > div:last-child { margin-top: 3rem; }
+  }
+
   @media (max-width: 480px) {
     .loader-name { font-size: clamp(1.3rem, 8.5vw, 2.2rem); letter-spacing: 0.04em; }
     .certs-grid { grid-template-columns: 1fr !important; }
@@ -1073,7 +1081,7 @@
   <div style="margin-top:5rem">
     <p class="section-label reveal">On Stage</p>
     <h2 class="section-heading reveal reveal-delay-1" style="font-size:clamp(2rem,5vw,4rem)">SPEAKING<br>ENGAGEMENTS</h2>
-    <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:3rem">
+    <div id="speakingGrid" style="display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-top:3rem">
       <div class="cert-card reveal" style="border:none">
         <div class="cert-glow"></div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:0.8rem">March 1, 2024</div>
@@ -1098,7 +1106,7 @@
         <div class="cert-name" style="font-size:1rem">Legal & Medical Office Procedures and Ethics</div>
         <p class="cert-desc">Guest Lecturer, College of Business Management<br><em style="color:var(--muted)">Taguig City University · Central Bicutan, Taguig</em></p>
       </div>
-      <div class="cert-card reveal reveal-delay-2" style="border:none;grid-column:span 2">
+      <div id="careerTalksCard" class="cert-card reveal reveal-delay-2" style="border:none;grid-column:span 2">
         <div class="cert-glow"></div>
         <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--gold);letter-spacing:0.2em;margin-bottom:0.8rem">August 5, 2019</div>
         <div class="cert-name" style="font-size:1rem">Career Talks — PUP College of Business</div>
@@ -1353,9 +1361,16 @@ function applyMobileGridFixes() {
     if (window.innerWidth <= 480) certsGrid.style.gridTemplateColumns = '1fr';
   }
 
-  // Speaking engagements grid (inside certs)
-  const speakingGrid = document.querySelector('#certs > div:last-child > div[style*="grid-template-columns"]');
-  if (speakingGrid) speakingGrid.style.gridTemplateColumns = isMobile ? '1fr' : 'repeat(2,1fr)';
+  // Speaking engagements grid
+  const speakingGrid = document.getElementById('speakingGrid');
+  if (speakingGrid) {
+    speakingGrid.style.gridTemplateColumns = isMobile ? '1fr' : 'repeat(2,1fr)';
+  }
+  // Career Talks card span
+  const careerTalksCard = document.getElementById('careerTalksCard');
+  if (careerTalksCard) {
+    careerTalksCard.style.gridColumn = isMobile ? 'span 1' : 'span 2';
+  }
 
   // Portfolio project grid
   const portGrid = document.getElementById('portfolioGrid');
